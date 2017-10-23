@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { Route } from 'react-router-dom'
-import { Link } from 'react-router-dom'
+import { Link, NavLink } from 'react-router-dom'
 import * as BooksAPI from './BooksAPI'
 import './vendor/materializeCss/materialize.css'
 import './App.css'
@@ -22,7 +22,6 @@ class BooksApp extends Component {
   componentDidMount() {
     BooksAPI.getAll().then((books) => {
       this.setState({ books })
-      console.log(books)
     })
   }
 
@@ -30,12 +29,20 @@ class BooksApp extends Component {
     return (
       <div className="app">
 
+        <header className="header">
+          <h1><Link to="/" className="header-logo">MyReads</Link></h1>
+          <nav className="header-nav">
+
+            <NavLink exact activeClassName='active' to='/'>My Books</NavLink>
+            <NavLink activeClassName='active' to='/search'>Search Books</NavLink>
+
+          </nav>
+        </header>
+
         <Route exact path="/" render={() => (
 
           <div className="list-books">
-            <div className="list-books-title">
-              <h1>MyReads</h1>
-            </div>
+
             <div className="list-books-content">
               <div>
 

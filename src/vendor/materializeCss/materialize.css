@@ -3,6 +3,14 @@
  * Copyright 2014-2017 Materialize
  * MIT License (https://raw.githubusercontent.com/Dogfalo/materialize/master/LICENSE)
  */
+
+h1,h2,h3,h4,h5,h6,p,input,select,button,ul,li,option,div {
+  font-smoothing: antialiased;
+  -moz-font-smoothing: antialiased;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
 .materialize-red {
   background-color: #e51c23 !important;
 }
@@ -2582,7 +2590,7 @@ a {
           box-shadow: none !important;
 }
 
-.z-depth-1, nav, .card-panel, .card, .toast, .btn, .btn-large, .btn-floating, .dropdown-content, .collapsible, .side-nav {
+.z-depth-1, .card-panel, .card, .toast, .btn, .btn-large, .btn-floating, .dropdown-content, .collapsible, .side-nav {
   -webkit-box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -2px rgba(0, 0, 0, 0.2);
           box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -2px rgba(0, 0, 0, 0.2);
 }
@@ -4206,14 +4214,6 @@ nav ul a span.badge {
   }
 }
 
-nav {
-  color: #fff;
-  background-color: #ee6e73;
-  width: 100%;
-  height: 56px;
-  line-height: 56px;
-}
-
 nav.nav-extended {
   height: auto;
 }
@@ -4406,19 +4406,6 @@ nav .input-field label.active i {
 
 .navbar-fixed nav {
   position: fixed;
-}
-
-@media only screen and (min-width: 601px) {
-  nav.nav-extended .nav-wrapper {
-    min-height: 64px;
-  }
-  nav, nav .nav-wrapper i, nav a.button-collapse, nav a.button-collapse i {
-    height: 64px;
-    line-height: 64px;
-  }
-  .navbar-fixed {
-    height: 64px;
-  }
 }
 
 a {
