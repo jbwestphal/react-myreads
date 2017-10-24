@@ -1,21 +1,19 @@
 import React, { Component } from 'react'
-import { Route } from 'react-router-dom'
-import { Link, NavLink } from 'react-router-dom'
+import { Route, Link } from 'react-router-dom'
+import escapeRegExp from 'escape-string-regexp'
 import * as BooksAPI from './BooksAPI'
 import './vendor/materializeCss/materialize.css'
 import './App.css'
-import BookShelf from './BookShelf'
+import Header from './Modules/Header'
+import Footer from './Modules/Footer'
+import BookShelf from './Components/BookShelf'
+import BookDetail from './Components/BookDetail'
 
 class BooksApp extends Component {
+
   state = {
-    /**
-     * TODO: Instead of using this state variable to keep track of which page
-     * we're on, use the URL in the browser's address bar. This will ensure that
-     * users can use the browser's back and forward buttons to navigate between
-     * pages, as well as provide a good URL they can bookmark and share.
-     */
     books: [],
-    showSearchPage: false
+    query: ''
   }
 
   // get books from API
@@ -25,75 +23,100 @@ class BooksApp extends Component {
     })
   }
 
+  updateQuery = (query) => {
+    this.setState({ query: query.trim() })
+  }
+
+  clearQuery = () => {
+      this.setState({ query: '' })
+  }
+
   render() {
+
+    const { books, query } = this.state
+
+    let showingBooks
+
+    if(query) {
+      const match = new RegExp(escapeRegExp(query), 'i')
+      showingBooks = books.filter((book) => match.test(book.title))
+    } else {
+        showingBooks = books
+    }
+
     return (
       <div className="app">
 
-        <header className="header">
-          <h1><Link to="/" className="header-logo">MyReads</Link></h1>
-          <nav className="header-nav">
+        <Header />
 
-            <NavLink exact activeClassName='active' to='/'>My Books</NavLink>
-            <NavLink activeClassName='active' to='/search'>Search Books</NavLink>
+        <main>
 
-          </nav>
-        </header>
+          <Route exact path="/" render={() => (
 
-        <Route exact path="/" render={() => (
+            <div className="list-books">
 
-          <div className="list-books">
+              <div className="list-books-content">
+                <div>
+                  <BookShelf
+                    books={books}
+                    shelfName="Currently Reading" />
 
-            <div className="list-books-content">
-              <div>
+                  <BookShelf
+                    books={books}
+                    shelfName="Want to Read" />
 
-                <BookShelf
-                  books={this.state.books}
-                  shelfName="Currently Reading" />
-
-                <BookShelf
-                  books={this.state.books}
-                  shelfName="Want to Read" />
-
-                <BookShelf
-                  books={this.state.books}
-                  shelfName="Read" />
-
+                  <BookShelf
+                    books={books}
+                    shelfName="Read" />
+                </div>
               </div>
             </div>
-            <div className="open-search">
-              <Link
-                to="/search"
-              >Add a book</Link>
-            </div>
-          </div>
 
-        )} />
+          )} />
 
-        <Route path="/search" render={() => (
-          <div className="search-books">
-            <div className="search-books-bar">
-              <Link
-                to="/"
-                className="close-search"
-              >Go Back</Link>
-              <div className="search-books-input-wrapper">
-                {/*
-                  NOTES: The search from BooksAPI is limited to a particular set of search terms.
-                  You can find these search terms here:
-                  https://github.com/udacity/reactnd-project-myreads-starter/blob/master/SEARCH_TERMS.md
+          <Route path="/search" render={() => (
+            <div className="search-books">
+              <div className="search-books-bar">
+                <Link
+                  to="/"
+                  className="close-search"
+                >Go Back</Link>
+                <div className="search-books-input-wrapper">
+                  {/*
+                    NOTES: The search from BooksAPI is limited to a particular set of search terms.
+                    You can find these search terms here:
+                    https://github.com/udacity/reactnd-project-myreads-starter/blob/master/SEARCH_TERMS.md
 
-                  However, remember that the BooksAPI.search method DOES search by title or author. So, don't worry if
-                  you don't find a specific author or title. Every search is limited by search terms.
-                */}
-                <input type="text" placeholder="Search by title or author"/>
+                    However, remember that the BooksAPI.search method DOES search by title or author. So, don't worry if
+                    you don't find a specific author or title. Every search is limited by search terms.
+                  */}
+                  <input
+                    type="text"
+                    placeholder="Search by title or author"
+                    value={query}
+                    onChange={(event) => this.updateQuery(event.target.value)}
+                  />
 
+                </div>
+              </div>
+              <div className="search-books-results">
+                <BookShelf
+                    books={showingBooks}
+                    shelfName="Books" />
               </div>
             </div>
-            <div className="search-books-results">
-              <ol className="books-grid"></ol>
+          )} />
+
+          <Route path="/books/:bookId" render={({match}) => (
+            <div>
+              <BookDetail bookId={match.params.bookId} />
             </div>
-          </div>
-        )} />
+          )} />
+
+        </main>
+
+        <Footer />
+
       </div>
     )
   }

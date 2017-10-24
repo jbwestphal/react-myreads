@@ -10,6 +10,16 @@ body, .app {
   background: white;
 }
 
+.app {
+  display: flex;
+  min-height: 100vh;
+  flex-direction: column;
+}
+
+main {
+  flex: 1 0 auto;
+}
+
 a {
   outline: none;
   border: 0;
@@ -17,6 +27,16 @@ a {
 }
 a.active {
   cursor: default;
+}
+
+.fade-enter {
+  opacity: 0;
+  z-index: 1;
+}
+
+.fade-enter.fade-enter-active {
+  opacity: 1;
+  transition: opacity 250ms ease-in;
 }
 
 /* main page */
@@ -64,7 +84,7 @@ a.active {
 .header-nav a {
   font-weight: 300;
   font-size: 15px;
-  margin-right: 20px;
+  margin-right: 35px;
   line-height: 60px;
   border-bottom: 3px solid transparent;
   text-transform: uppercase;
@@ -73,6 +93,15 @@ a.active {
 .header-nav a.active {
   font-weight: 600;
   border-bottom-color: #5e899c;
+}
+
+/* Footer */
+.page-footer {
+  background: #333;
+  padding: 0;
+}
+.footer-copyright {
+  background: none;
 }
 
 .list-books-content {

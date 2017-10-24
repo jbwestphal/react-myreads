@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import sortBy from 'sort-by'
-// import { Link } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 
 class Book extends Component {
 
@@ -13,11 +13,12 @@ class Book extends Component {
 		return (
 			<ol className="books-grid">
 				{books.map(book => (
-
 					<li key={book.id}>
 						<div className="book">
 							<div className="book-top">
+								<Link to={`books/${book.id}`}>
 								<div className="book-cover" style={{ width: 128, height: 193, backgroundImage: `url(${book.imageLinks.smallThumbnail})` }}></div>
+								</Link>
 								<div className="book-shelf-changer">
 									<select>
 										<option value="none" disabled>Move to...</option>
