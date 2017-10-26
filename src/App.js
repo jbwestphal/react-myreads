@@ -39,10 +39,14 @@ class BooksApp extends Component {
 
     if(query) {
       const match = new RegExp(escapeRegExp(query), 'i')
-      showingBooks = books.filter((book) => match.test(book.title))
+      showingBooks = books.filter((book) => match.test(book.title) || match.test(book.authors))
     } else {
         showingBooks = books
     }
+
+    const booksReading = books.filter((book) => book.shelf === 'currentlyReading')
+    const booksWantRead = books.filter((book) => book.shelf === 'wantToRead')
+    const booksRead = books.filter((book) => book.shelf === 'read')
 
     return (
       <div className="app">
@@ -58,15 +62,15 @@ class BooksApp extends Component {
               <div className="list-books-content">
                 <div>
                   <BookShelf
-                    books={books}
+                    books={booksReading}
                     shelfName="Currently Reading" />
 
                   <BookShelf
-                    books={books}
+                    books={booksWantRead}
                     shelfName="Want to Read" />
 
                   <BookShelf
-                    books={books}
+                    books={booksRead}
                     shelfName="Read" />
                 </div>
               </div>
