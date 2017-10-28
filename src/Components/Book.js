@@ -4,6 +4,10 @@ import { Link } from 'react-router-dom'
 
 class Book extends Component {
 
+	state = {
+		bookStatus: ''
+	}
+
 	render() {
 
 		const { books } = this.props
@@ -17,7 +21,7 @@ class Book extends Component {
 						<div className="book">
 							<div className="book-top">
 								<Link to={`books/${book.id}`}>
-								<div className="book-cover" style={{ width: 128, height: 193, backgroundImage: `url(${book.imageLinks.smallThumbnail})` }}></div>
+									<div className="book-cover" style={{ width: 128, height: 193, backgroundImage: `url(${book.imageLinks.smallThumbnail})` }}></div>
 								</Link>
 								<div className="book-shelf-changer">
 									<select>

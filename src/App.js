@@ -23,12 +23,32 @@ class BooksApp extends Component {
     })
   }
 
+  componentWillMount() {
+    const listBooks = window.localStorage.getItem('listBooks') || '[]';
+    this.setState({ books: JSON.parse(listBooks) });
+  }
+
+  updateLocalStorage(books) {
+    window.localStorage.setItem('listBooks', JSON.stringify(books));
+  }
+
   updateQuery = (query) => {
     this.setState({ query: query.trim() })
   }
 
   clearQuery = () => {
       this.setState({ query: '' })
+  }
+
+  updateBookStatus(target, task) {
+    this.setState(function (state, b) {
+      // const { items = [] } = state;
+      // const s = items.filter(_ => _.id !== task.id);
+      // task.status = target.checked ? 'Done' : 'To Do';
+      // s.push(task);
+      // this.updateLocalStorage(s);
+      // return { books: s };
+    });
   }
 
   render() {
@@ -48,8 +68,14 @@ class BooksApp extends Component {
     const booksWantRead = books.filter((book) => book.shelf === 'wantToRead')
     const booksRead = books.filter((book) => book.shelf === 'read')
 
+    const booksShelf = [
+      { id: 0, title: 'Currently Reading', status: booksReading },
+      { id: 1, title: 'Want to Read', status: booksWantRead },
+      { id: 2, title: 'Read', status: booksRead }
+    ]
+
     return (
-      <div className="app">
+      <section className="app">
 
         <Header />
 
@@ -60,19 +86,16 @@ class BooksApp extends Component {
             <div className="list-books">
 
               <div className="list-books-content">
-                <div>
-                  <BookShelf
-                    books={booksReading}
-                    shelfName="Currently Reading" />
-
-                  <BookShelf
-                    books={booksWantRead}
-                    shelfName="Want to Read" />
-
-                  <BookShelf
-                    books={booksRead}
-                    shelfName="Read" />
-                </div>
+                {
+                  booksShelf.map(item => (
+                    <BookShelf
+                      key={item.id}
+                      books={item.status}
+                      shelfName={item.title}
+                      updateBookStatus={this.updateBookStatus}
+                    />
+                  ))
+                }
               </div>
             </div>
 
@@ -104,6 +127,16 @@ class BooksApp extends Component {
                 </div>
               </div>
               <div className="search-books-results">
+                {showingBooks.length !== books.length && (
+                    <div className="row">
+                      <div className="col s12 m12">
+                        <div className="card-panel teal">
+                          <span className="white-text">Now showing {showingBooks.length} of {books.length} total</span> &nbsp;
+                          <button onClick={this.clearQuery} className="btn blue-grey lighten-5 black-text">Show all books</button>
+                        </div>
+                      </div>
+                    </div>
+                )}
                 <BookShelf
                     books={showingBooks}
                     shelfName="Books" />
@@ -121,7 +154,7 @@ class BooksApp extends Component {
 
         <Footer />
 
-      </div>
+      </section>
     )
   }
 }
