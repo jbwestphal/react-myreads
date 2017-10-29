@@ -7,7 +7,7 @@ body {
 }
 
 body, .app {
-  background: white;
+  background: #f7f7f7;
 }
 
 .app {
@@ -41,17 +41,17 @@ a.active {
 
 /* main page */
 
-.header {
+.header-main-wrapper {
   padding: 0 20px;
   background: #333;
   color: #e9e9e9;
 }
 
-.header a {
+.header-main-wrapper a {
   color: inherit;
 }
 
-.header h1 {
+.header-main-wrapper h1 {
   margin: 0;
   font-size: 19px;
   font-weight: 400;
@@ -62,7 +62,7 @@ a.active {
   text-transform: uppercase;
 }
 
-.header h1:before {
+.header-main-wrapper h1:before {
   content: '';
   width: 60px;
   height: 60px;
@@ -150,15 +150,17 @@ a.active {
 .search-books-bar {
   position: fixed;
   width: 100%;
-  top: 80px;
+  top: 67px;
   left: 0;
   z-index: 5;
   display: flex;
+  align-items: stretch;
   box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 0 6px rgba(0,0,0,0.23);
 }
 
 .search-books-input-wrapper {
   flex: 1;
+  background: white;
 }
 
 .search-books-bar input {
@@ -167,6 +169,7 @@ a.active {
   font-size: 1.25em;
   border: none;
   outline: none;
+  background: white;
 }
 
 .close-search {
@@ -174,13 +177,14 @@ a.active {
   top: 20px;
   left: 15px;
   width: 50px;
-  height: 53px;
+  min-height: 53px;
   background: white;
   background-image: url('./icons/arrow-back.svg');
   background-position: center;
   background-repeat: no-repeat;
   background-size: 28px;
   font-size: 0;
+  cursor: pointer;
 }
 
 .search-books-results {
@@ -202,30 +206,47 @@ a.active {
 .books-grid li {
   padding: 10px 15px;
   text-align: left;
+  width: 200px;
 }
 
 .book {
-  width: 140px;
+  text-align: center;
 }
 
-.book-title,
 .book-authors {
   font-size: 0.8em;
 }
 
 .book-title {
-  margin-top: 10px;
+  margin: 15px 0 5px;
+  font-size: 14px;
+  line-height: 1.2em;
 }
 
 .book-authors {
   color: #999;
 }
 
-.book-top {
+.book-author-name {
+  display: inline-block;
   position: relative;
+  margin-right: 5px;
+}
+.book-author-name::after {
+  content: ',';
+}
+.book-author-name:last-child::after {
+  display: none;
+}
+
+.book-top {
+  width: 140px;
   height: 200px;
   display: flex;
+  margin: 0 auto;
+  position: relative;
   align-items: flex-end;
+  justify-content: center;
 }
 
 .book-shelf-changer {
@@ -255,10 +276,21 @@ a.active {
 .book-cover {
   box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
   background: #eee;
+  max-height: 200px;
+  width: auto;
 }
 
 .book-cover-title {
   padding: 20px 10px 0;
   text-align: center;
   font-size: 0.8em;
+}
+
+/* Loading wrapper */
+.loading-wrapper {
+  height: 400px;
+  max-width: 900px;
+  font-size: 0;
+  margin: 0 auto;
+  background: url('./icons/loading.gif') no-repeat center center;
 }
