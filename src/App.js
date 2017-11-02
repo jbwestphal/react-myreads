@@ -17,25 +17,18 @@ class BooksApp extends Component {
     this.state = {
       books: [],
       query: '',
+      queryCateg: [],
       updatingBook: undefined
     }
+
     this.updateBookStatus = this.updateBookStatus.bind(this)
+    this.searchCategories = this.searchCategories.bind(this)
   }
 
-  // get books from API
   componentDidMount() {
     BooksAPI.getAll().then((books) => {
       this.setState({ books })
     })
-  }
-
-  componentWillMount() {
-    const listBooks = window.localStorage.getItem('listBooks') || '[]'
-    this.setState({ books: JSON.parse(listBooks) })
-  }
-
-  updateLocalStorage(books) {
-    window.localStorage.setItem('listBooks', JSON.stringify(books))
   }
 
   updateQuery = (query) => {
@@ -56,9 +49,20 @@ class BooksApp extends Component {
     })
   }
 
+  searchCategories(e) {
+    e.preventDefault()
+
+    const value = document.querySelector("#inputSearchCateg").value
+
+    BooksAPI.search(value, 20).then((queryCateg) => {
+      // console.log(queryCateg)
+      this.setState({ queryCateg })
+    })
+  }
+
   render() {
 
-    const { books, query } = this.state
+    const { books, query, queryCateg, updatingBook } = this.state
 
     let showingBooks
 
@@ -97,7 +101,7 @@ class BooksApp extends Component {
                   ))
                 }
               </div>
-              <If test={ this.state.updatingBook === true }>
+              <If test={ updatingBook === true }>
                 <div className="loading-wrapper loading-wrapper-float">Loading...</div>
               </If>
             </div>
@@ -119,6 +123,7 @@ class BooksApp extends Component {
                   />
                 </div>
               </div>
+
               <div className="search-books-results">
                 <If test={ showingBooks.length !== books.length }>
                   <div className="card-panel teal center-align">
@@ -128,11 +133,34 @@ class BooksApp extends Component {
                 </If>
                 <BookShelf
                   books={showingBooks}
-                  shelfName="Books"
+                  shelfName="Your Library"
                   updateBookStatus={this.updateBookStatus}
                 />
               </div>
-              <If test={ this.state.updatingBook === true }>
+              <div className="search-books-results search-books-results--category">
+                <div className="search-books-bar search-categories-bar">
+                  <div className="search-books-input-wrapper">
+                    <form method="post" name="searchForm" onSubmit={this.searchCategories}>
+                      <input type="text" placeholder="Search by categorie" id="inputSearchCateg" />
+                      <button type="submit" className="btn blue-grey">Search by Categorie</button>
+                    </form>
+                  </div>
+                </div>
+                <If test={ queryCateg !== undefined }>
+                  <BookShelf
+                    shelfName="Books by Categorie"
+                    books={queryCateg}
+                    updateBookStatus={this.updateBookStatus}
+                    booksLibrary={showingBooks}
+                  />
+                </If>
+                <If test={ queryCateg.length === 0 }>
+                  <div className="container center-align">
+                    <h4>No books found.</h4>
+                  </div>
+                </If>
+              </div>
+              <If test={ updatingBook === true }>
                 <div className="loading-wrapper loading-wrapper-float">Loading...</div>
               </If>
             </div>

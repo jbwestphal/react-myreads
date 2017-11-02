@@ -9,6 +9,7 @@ const BookShelf = (props) => {
 			<div className="bookshelf-books">
 				<Book
 					books={props.books}
+					booksLibrary={props.booksLibrary}
 					updateBookStatus={props.updateBookStatus}
 				/>
 			</div>

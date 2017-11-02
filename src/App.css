@@ -154,14 +154,31 @@ a.active {
 /* search page */
 
 .search-books-bar {
-  position: fixed;
   width: 100%;
-  top: 67px;
   left: 0;
   z-index: 5;
+  position: relative;
   display: flex;
   align-items: stretch;
   box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 0 6px rgba(0,0,0,0.23);
+}
+
+.search-categories-bar {
+  margin: 40px 0 0;
+}
+.search-categories-bar .search-books-input-wrapper {
+  padding: 0 20px;
+}
+
+.search-categories-bar .search-books-input-wrapper form {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.search-categories-bar .search-books-input-wrapper input {
+  width: 70%;
+  margin-right: 2%;
 }
 
 .search-books-input-wrapper {
@@ -194,7 +211,7 @@ a.active {
 }
 
 .search-books-results {
-  padding: 58px 0 20px;
+  padding: 20px 0;
 }
 
 .search-books-results .bookshelf {
@@ -316,6 +333,17 @@ a.active {
   height: 100%;
   max-width: 100%;
   background-color: rgba(255,255,255,0.4);
+}
+
+
+
+.search-books-results .bookshelf {
+  width: 100%;
+}
+
+.search-books-results--category .bookshelf{
+  margin-top: 0;
+  padding-top: 0;
 }
 
 /* Responsives */

@@ -1,8 +1,29 @@
 import React from 'react'
 import sortBy from 'sort-by'
+import If from './If'
 import { Link } from 'react-router-dom'
 
-const Book = ({ books, updateBookStatus }) => {
+
+const Book = ({ books, booksLibrary, updateBookStatus }) => {
+
+	const booksNotInTheShelf = (books, booksLibrary) => {
+		let newBooksArray = []
+
+		books.forEach(function(b) {
+			let exists = booksLibrary.some(function (bl) {
+				return b.id === bl.id;
+			});
+
+			// Inserts in the new array only books that are not in the user's shelf
+			if (!exists) newBooksArray.push(b)
+		});
+
+		return newBooksArray;
+	}
+
+	if(booksLibrary !== undefined) {
+		books = booksNotInTheShelf(books, booksLibrary)
+	}
 
 	books.sort(sortBy('title'))
 
@@ -19,21 +40,19 @@ const Book = ({ books, updateBookStatus }) => {
 								<select
 									name="bookStatus"
 									onChange={(e) => updateBookStatus(book, e.target.value)}
-									defaultValue={book.shelf}>
-									<option value="none" disabled>Move to...</option>
+									defaultValue={book.shelf === undefined ? 'none' : book.shelf}>
+									<option value="moveto" disabled>Move to...</option>
 									<option value="currentlyReading">Currently Reading</option>
 									<option value="wantToRead">Want to Read</option>
-									<option value="read"n>Read</option>
+									<option value="read">Read</option>
 									<option value="none">None</option>
 								</select>
 							</div>
 						</div>
 						<div className="book-title">{book.title}</div>
-						<div className="book-authors">{
-							book.authors.map((author,index) => (
-								<span className="book-author-name" key={index}>{author}</span>
-							))
-						}</div>
+						<If test={ book.authors !== undefined }>
+							<div className="book-authors">{book.authors}</div>
+						</If>
 					</div>
 				</li>
 			) ) }
