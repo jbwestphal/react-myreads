@@ -6,14 +6,20 @@ import './vendor/materializeCss/materialize.css'
 import './App.css'
 import Header from './Modules/Header'
 import Footer from './Modules/Footer'
+import If from './Components/If'
 import BookShelf from './Components/BookShelf'
 import BookDetail from './Components/BookDetail'
 
 class BooksApp extends Component {
 
-  state = {
-    books: [],
-    query: ''
+  constructor(props) {
+    super(props)
+    this.state = {
+      books: [],
+      query: '',
+      updatingBook: undefined
+    }
+    this.updateBookStatus = this.updateBookStatus.bind(this)
   }
 
   // get books from API
@@ -24,12 +30,12 @@ class BooksApp extends Component {
   }
 
   componentWillMount() {
-    const listBooks = window.localStorage.getItem('listBooks') || '[]';
-    this.setState({ books: JSON.parse(listBooks) });
+    const listBooks = window.localStorage.getItem('listBooks') || '[]'
+    this.setState({ books: JSON.parse(listBooks) })
   }
 
   updateLocalStorage(books) {
-    window.localStorage.setItem('listBooks', JSON.stringify(books));
+    window.localStorage.setItem('listBooks', JSON.stringify(books))
   }
 
   updateQuery = (query) => {
@@ -40,15 +46,14 @@ class BooksApp extends Component {
       this.setState({ query: '' })
   }
 
-  updateBookStatus(target, task) {
-    this.setState(function (state, b) {
-      // const { items = [] } = state;
-      // const s = items.filter(_ => _.id !== task.id);
-      // task.status = target.checked ? 'Done' : 'To Do';
-      // s.push(task);
-      // this.updateLocalStorage(s);
-      // return { books: s };
-    });
+  updateBookStatus(book, shelf) {
+    this.setState({ updatingBook: true })
+    BooksAPI.update(book, shelf).then((books) => {
+      BooksAPI.getAll().then((books) => {
+        this.setState({ books })
+        this.setState({ updatingBook: false })
+      })
+    })
   }
 
   render() {
@@ -76,15 +81,10 @@ class BooksApp extends Component {
 
     return (
       <section className="app">
-
         <Header />
-
         <main>
-
           <Route exact path="/" render={() => (
-
             <div className="list-books">
-
               <div className="list-books-content">
                 {
                   booksShelf.map(item => (
@@ -97,8 +97,10 @@ class BooksApp extends Component {
                   ))
                 }
               </div>
+              <If test={ this.state.updatingBook === true }>
+                <div className="loading-wrapper loading-wrapper-float">Loading...</div>
+              </If>
             </div>
-
           )} />
 
           <Route path="/search" render={() => (
@@ -109,38 +111,30 @@ class BooksApp extends Component {
                   className="close-search"
                 >Go Back</Link>
                 <div className="search-books-input-wrapper">
-                  {/*
-                    NOTES: The search from BooksAPI is limited to a particular set of search terms.
-                    You can find these search terms here:
-                    https://github.com/udacity/reactnd-project-myreads-starter/blob/master/SEARCH_TERMS.md
-
-                    However, remember that the BooksAPI.search method DOES search by title or author. So, don't worry if
-                    you don't find a specific author or title. Every search is limited by search terms.
-                  */}
                   <input
                     type="text"
                     placeholder="Search by title or author"
                     value={query}
                     onChange={(event) => this.updateQuery(event.target.value)}
                   />
-
                 </div>
               </div>
               <div className="search-books-results">
-                {showingBooks.length !== books.length && (
-                    <div className="row">
-                      <div className="col s12 m12">
-                        <div className="card-panel teal">
-                          <span className="white-text">Now showing {showingBooks.length} of {books.length} total</span> &nbsp;
-                          <button onClick={this.clearQuery} className="btn blue-grey lighten-5 black-text">Show all books</button>
-                        </div>
-                      </div>
-                    </div>
-                )}
+                <If test={ showingBooks.length !== books.length }>
+                  <div className="card-panel teal center-align">
+                    <span className="white-text">Now showing {showingBooks.length} of {books.length} total</span> &nbsp;
+                    <button onClick={this.clearQuery} className="btn blue-grey lighten-5 black-text">Show all books</button>
+                  </div>
+                </If>
                 <BookShelf
-                    books={showingBooks}
-                    shelfName="Books" />
+                  books={showingBooks}
+                  shelfName="Books"
+                  updateBookStatus={this.updateBookStatus}
+                />
               </div>
+              <If test={ this.state.updatingBook === true }>
+                <div className="loading-wrapper loading-wrapper-float">Loading...</div>
+              </If>
             </div>
           )} />
 
@@ -149,11 +143,8 @@ class BooksApp extends Component {
               <BookDetail bookId={match.params.bookId} />
             </div>
           )} />
-
         </main>
-
         <Footer />
-
       </section>
     )
   }

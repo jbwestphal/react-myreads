@@ -35,7 +35,9 @@ class BookDetail extends Component {
 		}
 
 		return (
+
 			<section className="container book-detail">
+
 				<header className="book-detail-header">
 					<a onClick={this.goBack} className="close-search" title="Go Back">Go Back</a>
 					<h2 className="header grey-text">{book.title}</h2>
