@@ -3,17 +3,16 @@ import sortBy from 'sort-by'
 import If from './If'
 import { Link } from 'react-router-dom'
 
-
 const Book = ({ books, booksLibrary, updateBookStatus }) => {
 
 	const booksNotInTheShelf = (books, booksLibrary) => {
 		let newBooksArray = []
 
+		// loop to compare books in your library or not
 		books.forEach(function(b) {
 			let exists = booksLibrary.some(function (bl) {
 				return b.id === bl.id;
 			});
-
 			// Inserts in the new array only books that are not in the user's shelf
 			if (!exists) newBooksArray.push(b)
 		});
