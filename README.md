@@ -8,6 +8,15 @@ Developed with Javascript, ReactJs and CSS
 * install all project dependencies with `npm install`
 * start the development server with `npm start`
 
+## Features
+
+- Book Detail
+- Change book's status
+- Search books in your library
+- Search books in API by category
+- App built with React-router
+- Layout built with Materialize CSS
+
 ## What You're Getting
 ```bash
 ├── CONTRIBUTING.md

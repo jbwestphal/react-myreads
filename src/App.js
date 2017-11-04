@@ -1,28 +1,58 @@
 import React, { Component } from 'react'
 import { Route, Link } from 'react-router-dom'
-import escapeRegExp from 'escape-string-regexp'
 import * as BooksAPI from './BooksAPI'
-import './vendor/materializeCss/materialize.css'
-import './App.css'
+import If from './Components/If'
+import escapeRegExp from 'escape-string-regexp'
 import Header from './Modules/Header'
 import Footer from './Modules/Footer'
-import If from './Components/If'
 import BookShelf from './Components/BookShelf'
 import BookDetail from './Components/BookDetail'
+import './vendor/materializeCss/materialize.css'
+import './App.css'
 
 class BooksApp extends Component {
 
   constructor(props) {
+
     super(props)
     this.state = {
       books: [],
       query: '',
       queryCateg: [],
+      showLoader: false,
       updatingBook: undefined
     }
 
     this.updateBookStatus = this.updateBookStatus.bind(this)
-    this.searchCategories = this.searchCategories.bind(this)
+
+    // search books by categories in the API
+    this.searchCategories = this.debounce(() => {
+      const value = document.querySelector("#inputSearchCateg").value
+      this.setState({ showLoader: true })
+      BooksAPI.search(value, 20).then((queryCateg) => {
+        this.setState({ queryCateg })
+        this.setState({ showLoader: false })
+      }).catch((error) => {
+        this.setState({ queryCateg: [] })
+        this.setState({ showLoader: false })
+      })
+
+    }, 300);
+
+  }
+
+  // generic debounce function for events
+  debounce(func, wait, immediate) {
+    var timeout;
+    return function() {
+      var context = this, args = arguments;
+      clearTimeout(timeout);
+      timeout = setTimeout(function() {
+        timeout = null;
+        if (!immediate) func.apply(context, args);
+      }, wait);
+      if (immediate && !timeout) func.apply(context, args);
+    };
   }
 
   componentDidMount() {
@@ -31,14 +61,17 @@ class BooksApp extends Component {
     })
   }
 
+  // update the library by search query
   updateQuery = (query) => {
     this.setState({ query: query.trim() })
   }
 
+  // clear the library by search query
   clearQuery = () => {
       this.setState({ query: '' })
   }
 
+  // update the book's status
   updateBookStatus(book, shelf) {
     this.setState({ updatingBook: true })
     BooksAPI.update(book, shelf).then((books) => {
@@ -49,20 +82,9 @@ class BooksApp extends Component {
     })
   }
 
-  searchCategories(e) {
-    e.preventDefault()
-
-    const value = document.querySelector("#inputSearchCateg").value
-
-    BooksAPI.search(value, 20).then((queryCateg) => {
-      // console.log(queryCateg)
-      this.setState({ queryCateg })
-    })
-  }
-
   render() {
 
-    const { books, query, queryCateg, updatingBook } = this.state
+    const { books, query, queryCateg, showLoader, updatingBook } = this.state
 
     let showingBooks
 
@@ -73,14 +95,11 @@ class BooksApp extends Component {
         showingBooks = books
     }
 
-    const booksReading = books.filter((book) => book.shelf === 'currentlyReading')
-    const booksWantRead = books.filter((book) => book.shelf === 'wantToRead')
-    const booksRead = books.filter((book) => book.shelf === 'read')
-
+    // object for management of book's shelfs
     const booksShelf = [
-      { id: 0, title: 'Currently Reading', status: booksReading },
-      { id: 1, title: 'Want to Read', status: booksWantRead },
-      { id: 2, title: 'Read', status: booksRead }
+      { id: 0, title: 'Currently Reading', status: books.filter((book) => book.shelf === 'currentlyReading') },
+      { id: 1, title: 'Want to Read', status: books.filter((book) => book.shelf === 'wantToRead') },
+      { id: 2, title: 'Read', status: books.filter((book) => book.shelf === 'read') }
     ]
 
     return (
@@ -140,21 +159,29 @@ class BooksApp extends Component {
               <div className="search-books-results search-books-results--category">
                 <div className="search-books-bar search-categories-bar">
                   <div className="search-books-input-wrapper">
-                    <form method="post" name="searchForm" onSubmit={this.searchCategories}>
-                      <input type="text" placeholder="Search by categorie" id="inputSearchCateg" />
-                      <button type="submit" className="btn blue-grey">Search by Categorie</button>
+                    <form name="searchForm">
+                      <input
+                        type="text"
+                        placeholder="Search by category"
+                        id="inputSearchCateg"
+                        autoComplete="off"
+                        onKeyUp={this.searchCategories}
+                      />
                     </form>
                   </div>
                 </div>
                 <If test={ queryCateg !== undefined }>
                   <BookShelf
-                    shelfName="Books by Categorie"
+                    shelfName="Books by Category"
                     books={queryCateg}
                     updateBookStatus={this.updateBookStatus}
                     booksLibrary={showingBooks}
                   />
                 </If>
-                <If test={ queryCateg.length === 0 }>
+                <If test={ showLoader === true }>
+                  <div className="loading-wrapper">Loading...</div>
+                </If>
+                <If test={ queryCateg.length === 0 && showLoader === false }>
                   <div className="container center-align">
                     <h4>No books found.</h4>
                   </div>
@@ -171,6 +198,7 @@ class BooksApp extends Component {
               <BookDetail bookId={match.params.bookId} />
             </div>
           )} />
+
         </main>
         <Footer />
       </section>
