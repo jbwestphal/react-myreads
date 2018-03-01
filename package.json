@@ -1,4 +1,9 @@
 {
+  "name": "react-myreads",
+  "description": "An application for check the books that you want to read or already read.",
+  "author": "Jéssica Westphal",
+  "version": "0.1.1",
+  "private": true,
   "dependencies": {
     "escape-string-regexp": "^1.0.5",
     "form-serialize": "^0.7.2",
