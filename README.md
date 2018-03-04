@@ -1,7 +1,8 @@
 # MyReads Project
 
-An app for manage books that you are reading, want to read or already read.
-Developed with Javascript, ReactJs and CSS
+An application for manage books that you are reading, want to read or already read.
+Developed with JavaScript, React and MaterializeCSS.
+Application URL: [`See App`](https://react-myreads.herokuapp.com)
 
 ## Running
 
