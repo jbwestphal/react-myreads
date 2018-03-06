@@ -1,18 +1,21 @@
-# MyReads Project
+# React MyReads
 
 An application for manage books that you are reading, want to read or already read.
+
 Developed with JavaScript, React and MaterializeCSS.
-Application URL: [`See App`](https://react-myreads.herokuapp.com)
+
+Application on Heroku: [`See Project`](https://react-myreads.herokuapp.com)
 
 ## Running
 
-* install all project dependencies with `npm install`
-* start the development server with `npm start`
+* First, cd client for running the next tasks
+* Install all project dependencies with `npm install`
+* Start the development server with `npm start`
 
 ## Features
 
 - Book Detail
-- Change book's status
+- Change book status
 - Search books in your library
 - Search books in API by category
 - App built with React-router
