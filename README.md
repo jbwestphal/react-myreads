@@ -6,6 +6,11 @@ Developed with JavaScript, React and MaterializeCSS.
 
 Application on Heroku: [`See Project`](https://react-myreads.herokuapp.com)
 
+## Requirements
+
+- [Node.js](https://nodejs.org)
+- [NPM](https://www.npmjs.com/get-npm) ou [Yarn](https://yarnpkg.com)
+
 ## Running
 
 * First, cd client for running the next tasks
